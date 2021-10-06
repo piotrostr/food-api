@@ -32,12 +32,11 @@ class Requirements(BaseModel):
 @app.post('/foods')
 async def foods(requirements: Requirements):
     print(requirements.vegan)
-
     return requirements
 
 # TODO
 
-# implement authentication (used for both health handler and 
+# implement authentication (used for both health handler and premiere)
 
 # find database of 
 # add each of the requirements to columns 
