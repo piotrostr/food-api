@@ -1,3 +1,13 @@
+import nltk
+
+from nltk.corpus import wordnet as wn
+
+
+nltk.download('wordnet')
+foodset = wn.synset('food.n.02')
+food_names = [w for s in foodset.closure(lambda s: s.hyponyms()) 
+              for w in s.lemma_names()]
+food_names = list(set([w.lower() for w in food_names]))
 
 def parse(s) -> tuple[str, str]:
     words = s.split(' ')
@@ -44,16 +54,20 @@ def parse(s) -> tuple[str, str]:
             if words[i] in qty_words:
                 qty = ''
                 product = ''
-                print(words[i])
                 if is_number(words[i - 1]):
                     qty += words[i - 1]
                 qty += words[i]
+                first = True
                 for word in words:
+                    word = word.replace(',', '')
                     if (
                         is_food(word) or
                         is_food_unit(word)
                     ):
+                        if not first:
+                            product += ' '
                         product += word
+                        first = False
                 return qty + ' ' + product, 'unit'
 
     # case where '3 garlic cloves'
@@ -62,6 +76,7 @@ def parse(s) -> tuple[str, str]:
             is_number(words[i]) and 
             is_food(words[i + 1])
         ):
+            print(words[i], words[i + 1])
             qty = words[i]
             product = ''
             for word in words:
@@ -82,7 +97,12 @@ def is_number(s: str) -> bool:
 
 
 def is_food(word: str):
-    if word == 'garlic':
+    _word = word
+    # the above is a good base but it lacks eggs :(
+    # and garlic >:E
+    if _word[-1] == 's':
+        _word = _word[:-1]
+    if _word in food_names:
         return True
     return False
 
