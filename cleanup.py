@@ -1,3 +1,4 @@
+from parse import is_number
 
 def cleanup(ingredients: list[str]):
     res = []
@@ -5,8 +6,6 @@ def cleanup(ingredients: list[str]):
         s = s.lower()
         if s.count('-'):
             s = s[::-1].replace('-', ' ')[::-1]
-        if 'gs' in s:
-            print('huj', s)
         s = s.replace('one', '1')
         s = s.replace('two', '2')
         s = s.replace('three', '3')
@@ -17,7 +16,11 @@ def cleanup(ingredients: list[str]):
         s = s.replace('eight', '8')
         s = s.replace('nine', '9')
         s = s.replace('lb.', 'lb')
-        s = s.replace('gs', 'g')
+        if 'gs' in s:
+            # here should get all the occurences 
+            # and check if they egg or 20gs
+            if is_number(s.replace('gs', '')):
+                s = s.replace('gs', 'g')
         s = s.replace('lb', 'pound')
         s = s.replace('pounds', 'pound')
         s = s.replace('½', '.5')
