@@ -1,13 +1,15 @@
 import nltk
+import pandas as pd
 
-from nltk.corpus import wordnet as wn
+
+def get_food_names():
+    nutrition_df = pd.read_excel('nutrition.xslx')
+    food_names = nutrition_df['Shrt_Desc'].tolist()
+    food_names = [food.lower() for food in food_names]
+    return food_names
 
 
-nltk.download('wordnet')
-foodset = wn.synset('food.n.02')
-food_names = [w for s in foodset.closure(lambda s: s.hyponyms()) 
-              for w in s.lemma_names()]
-food_names = list(set([w.lower() for w in food_names]))
+food_names = get_food_names()
 
 def parse(s) -> tuple[str, str]:
     words = s.split(' ')
@@ -76,7 +78,6 @@ def parse(s) -> tuple[str, str]:
             is_number(words[i]) and 
             is_food(words[i + 1])
         ):
-            print(words[i], words[i + 1])
             qty = words[i]
             product = ''
             for word in words:
@@ -98,12 +99,16 @@ def is_number(s: str) -> bool:
 
 def is_food(word: str):
     _word = word
-    # the above is a good base but it lacks eggs :(
-    # and garlic >:E
     if _word[-1] == 's':
         _word = _word[:-1]
-    if _word in food_names:
-        return True
+    for food in food_names:
+        _food = food
+        for i in _food:
+            if is_number(i):
+                _food = _food.replace(i, '')
+        # this db matches every word with foods
+        if _word in _food and len(_food.split(',')) < 2:
+            return True
     return False
 
 
