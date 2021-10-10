@@ -8,12 +8,22 @@ def get_food_names():
     food_names = [food.lower() for food in food_names]
     return food_names
 
-
 food_names = get_food_names()
+
+def get_rid_of_halves(s: str):
+    if '-' in s:
+        left, right = s.split('-')
+        if is_number(left) and is_number(right):
+            middle = (float(left) + float(right)) / 2
+            s = str(round(middle, 2))
+    return s
+
 
 def parse(s) -> tuple[str, str]:
     words = s.split(' ')
-
+    words = [word.replace(',', '') for word in words]
+    words = [word.replace('.', '') for word in words]
+    words = [get_rid_of_halves(word) for word in words]
     # case where '15g of chicken' at the start
     if 'g' in words[0]:
         try: 
@@ -106,14 +116,17 @@ def is_food(word: str):
         for i in _food:
             if is_number(i):
                 _food = _food.replace(i, '')
-        # this db matches every word with foods
         if _word in _food and len(_food.split(',')) < 2:
             return True
     return False
 
 
 def is_food_unit(word: str):
-    if word == 'cloves':
-        return True
+    food_units = [
+        'clove',
+        'slice', 
+        'loaf',
+
+    ]
     return False
 
