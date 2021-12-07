@@ -38,7 +38,6 @@ async def foods(requirements: Requirements):
 
 # implement authentication (used for both health handler and premiere)
 
-# find database of 
 # add each of the requirements to columns 
 # so it doesnt need to be evaluated at runtime
 

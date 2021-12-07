@@ -8,6 +8,7 @@ def get_food_names():
     food_names = [food.lower() for food in food_names]
     return food_names
 
+
 food_names = get_food_names()
 
 def get_rid_of_halves(s: str):
@@ -19,10 +20,16 @@ def get_rid_of_halves(s: str):
     return s
 
 
+def get_rid_of_dots(s: str):
+    if not is_number(s.replace('g', '')):
+        return s.replace('.', '')
+    return s
+
+
 def parse(s) -> tuple[str, str]:
     words = s.split(' ')
     words = [word.replace(',', '') for word in words]
-    words = [word.replace('.', '') for word in words]
+    words = [get_rid_of_dots(word) for word in words]
     words = [get_rid_of_halves(word) for word in words]
     # case where '15g of chicken' at the start
     if 'g' in words[0]:
